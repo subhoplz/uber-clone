@@ -25,6 +25,19 @@ function findAvailablePort(startPort) {
     });
 }
 
+const validateEnv = () => {
+    const required = ['JWT_SECRET'];
+    for (const key of required) {
+        if (!process.env[key]) {
+            console.error(`❌ Error: ${key} environment variable is required`);
+            process.exit(1);
+        }
+    }
+};
+
+// Call this before starting your server
+validateEnv();
+
 const startServer = async () => {
     try {
         // Connect to MongoDB first

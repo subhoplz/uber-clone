@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -24,19 +25,27 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-userSchema.statics.hashPassword = async function (password) {
-    return await bcrypt.hash(password, 10);
-}
-
 userSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+    const token = jwt.sign(
+        { _id: this._id },
+        jwtSecret,
+        { expiresIn: '24h' }
+    );
     return token;
 }
+
 
 userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
-const UserModel = mongoose.model('User', userSchema);
+userSchema.statics.hashPassword = async function (password) {
+    return await bcrypt.hash(password, 10);
+}
 
-module.exports = UserModel;
+const UserModel = mongoose.model('User', userSchema);
+module.exports = UserModel; 
