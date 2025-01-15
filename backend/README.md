@@ -155,3 +155,90 @@ curl -X POST http://localhost:3000/users/login \
     "password": "password123"
 }'
 ```
+
+# User Profile Endpoint
+
+## Endpoint
+`GET /users/profile`
+
+## Description
+This endpoint retrieves the profile information of the authenticated user.
+
+## Authentication
+Requires a valid JWT token in the Authorization header or cookie.
+
+## Response Body
+The response body will be a JSON object with the following fields:
+- `success` (boolean): Indicates if the request was successful
+- `user` (object): The user object containing the user's details
+  - `_id` (string): The unique identifier of the user
+  - `username` (string): The username of the user
+  - `email` (string): The email address of the user
+
+Example:
+```json
+{
+    "success": true,
+    "user": {
+        "_id": "60c72b2f9b1d8e001c8e4e1a",
+        "username": "john_doe",
+        "email": "john@example.com"
+    }
+}
+Status Codes
+200 OK: Profile retrieved successfully
+401 Unauthorized: No valid authentication token provided
+500 Internal Server Error: Server error occurred
+Usage
+User Logout Endpoint
+Endpoint
+GET /users/logout
+
+##Description
+This endpoint logs out the currently authenticated user by clearing their authentication cookie and blacklisting their current token.
+
+##Authentication
+Requires a valid JWT token in the Authorization header or cookie.
+
+##Response Body
+The response body will be a JSON object with the following field:
+
+message (string): A success message indicating the logout status
+Example:
+
+##Status Codes
+200 OK: User successfully logged out
+401 Unauthorized: No valid authentication token provided
+500 Internal Server Error: Server error occurred
+Usage
+
+```curl -X GET http://localhost:3000/users/profile \
+-H "Authorization: Bearer your_jwt_token"
+User Logout Endpoint
+Endpoint
+GET /users/logout
+
+##Description
+This endpoint logs out the currently authenticated user by clearing their authentication cookie and blacklisting their current token.
+
+##Authentication
+Requires a valid JWT token in the Authorization header or cookie.
+
+##Response Body
+The response body will be a JSON object with the following field:
+
+message (string): A success message indicating the logout status
+Example:
+
+
+
+{
+    "message": "Logout successful"
+}
+Status Codes
+200 OK: User successfully logged out
+401 Unauthorized: No valid authentication token provided
+500 Internal Server Error: Server error occurred
+Usagecurl -X GET http://localhost:3000/users/logout \
+-H "Authorization: Bearer your_jwt_token" \
+--cookie "token=your_jwt_token"
