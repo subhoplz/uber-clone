@@ -72,10 +72,10 @@ captainSchema.methods.generateAuthToken = function () {
 captainSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
+
 captainSchema.statics.hashPassword = async function (password) {
     return await bcrypt.hash(password, 10);
 };
 
-module.exports = mongoose.model('Captain', captainSchema);
-
-module.exports = captainModel;
+const CaptainModel = mongoose.model('Captain', captainSchema);
+module.exports = CaptainModel;
