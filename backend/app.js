@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./db/db');
 const { connect } = require('mongoose');
 const userRouter = require('./routes/user.routes');
+const captainRouter = require('./routes/captain.routes');
 
 app.use(cors({
     origin: 'http://localhost:5173', // or your frontend URL
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/users', userRouter);
+app.use('/captains', captainRouter);
 
 connectDB();
 
