@@ -53,9 +53,9 @@ Example:
 {
     "error": [
         {
-            "msg": "Invalid email format",
-            "param": "email",
-            "location": "body"
+            "msg": "Invalid email format", // string, error message
+            "param": "email", // string, parameter that caused the error
+            "location": "body" // string, location of the parameter
         }
     ]
 }
@@ -131,9 +131,9 @@ Example:
 {
     "error": [
         {
-            "msg": "Invalid email format",
-            "param": "email",
-            "location": "body"
+            "msg": "Invalid email format", // string, error message
+            "param": "email", // string, parameter that caused the error
+            "location": "body" // string, location of the parameter
         }
     ]
 }
@@ -242,26 +242,16 @@ This endpoint allows captains to register by providing their username, email, pa
 
 ## Request Body
 The request body should be a JSON object with the following fields:
-- `username` (string, required): The username of the captain. Must be at least 3 characters long.
-- `email` (string, required): The email address of the captain. Must be a valid email format.
-- `password` (string, required): The password of the captain. Must be at least 6 characters long.
-- `vehicle` (object, required): The vehicle details of the captain.
-  - `color` (string, required): The color of the vehicle. Must be at least 3 characters long.
-  - `plate` (string, required): The plate number of the vehicle. Must be at least 3 characters long.
-  - `capacity` (number, required): The capacity of the vehicle.
-  - `vehicleType` (string, required): The type of the vehicle. Must be one of 'motorcycle', 'car', or 'auto'.
-
-Example:
 ```json
 {
-    "username": "captain_jack",
-    "email": "jack@example.com",
-    "password": "password123",
+    "username": "captain_jack", // string, required, must be at least 3 characters long
+    "email": "jack@example.com", // string, required, must be a valid email format
+    "password": "password123", // string, required, must be at least 6 characters long
     "vehicle": {
-        "color": "red",
-        "plate": "ABC123",
-        "capacity": 4,
-        "vehicleType": "car"
+        "color": "red", // string, required, must be at least 3 characters long
+        "plate": "ABC123", // string, required, must be at least 3 characters long
+        "capacity": 4, // number, required
+        "vehicleType": "car" // string, required, must be one of 'motorcycle', 'car', or 'auto'
     }
 }
 ```
@@ -277,6 +267,7 @@ The response body will be a JSON object with the following fields:
     - `plate` (string): The plate number of the vehicle.
     - `capacity` (number): The capacity of the vehicle.
     - `vehicleType` (string): The type of the vehicle.
+- `token` (string): The authentication token for the captain.
 
 Example:
 ```json
@@ -291,7 +282,8 @@ Example:
             "capacity": 4,
             "vehicleType": "car"
         }
-    }
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
@@ -311,3 +303,4 @@ curl -X POST http://localhost:3000/captains/register \
     }
 }'
 ```
+`````
