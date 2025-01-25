@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-// import axios from 'axios'
-// import { UserDataContext } from '../context/UserContext'
+import { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { UserDataContext } from '/context/UserContext'
+
 
 const UserSignup = () => {
     const [email, setEmail] = useState('')
@@ -10,41 +11,46 @@ const UserSignup = () => {
     const [lastName, setLastName] = useState('')
     const [userData, setUserData] = useState({})
 
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
 
 
-    // const { user, setUser } = useContext(UserDataContext)
+    const { setUser } = useContext(UserDataContext)
 
 
 
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        setUserData({
-            fullname: {
-                firstname: firstName,
-                lastname: lastName
-            },
+        const newUser = ({
+            username: `${firstName}  ${lastName}`,
             email: email,
             password: password
         })
 
-        // const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+        setUserData(newUser)
+        setUser(newUser)
 
-        // if (response.status === 201) {
-        //     const data = response.data
-        //     setUser(data.user)
-        //     localStorage.setItem('token', data.token)
-        //     navigate('/home')
-        // }
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+
+            if (response.status === 201) {
+                const data = response.data
+                setUser(data.user)
+                localStorage.setItem('token', data.token)
+                navigate('/home')
+            }
+        } catch (error) {
+            console.error("Registration failed:", error.response ? error.response.data : error.message);
+            // Optionally, you can display an error message to the user here
+        }
+
         console.log(userData);
 
         setEmail('')
         setFirstName('')
         setLastName('')
         setPassword('')
-
     }
     return (
         <div>

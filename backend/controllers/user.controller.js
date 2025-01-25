@@ -1,29 +1,40 @@
 const { validationResult } = require('express-validator');
 const UserModel = require('../models/user.model');
+const User = require('../models/user.model');
 const userService = require('../services/user.service');
 const blacklistTokenModel = require('../models/blacklistToken.model');
+const bcrypt = require('bcrypt');
 
-module.exports.registerUser = async (req, res) => {
+exports.registerUser = async (req, res) => {
     try {
-        const error = validationResult(req);
-        if (!error.isEmpty()) {
-            return res.status(400).json({ error: error.array() });
+        // Validate input
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
 
         const { username, email, password } = req.body;
-        const isUserExists = await UserModel.findOne({ email });
-        if (isUserExists) {
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
-        const hashPassword = await UserModel.hashPassword(password);
 
-        const user = await userService.createUser({
+        // Hash the password before saving
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+
+        // Create new user
+        const user = new User({
             username,
             email,
-            password: hashPassword
+            password: hashedPassword // Use the hashed password
         });
+        await user.save();
 
+        // Generate token
         const token = user.generateAuthToken();
+
         res.status(201).json({
             user: {
                 _id: user._id,
@@ -33,7 +44,8 @@ module.exports.registerUser = async (req, res) => {
             token
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error registering user:", error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
