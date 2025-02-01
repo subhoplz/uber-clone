@@ -13,5 +13,24 @@ const blacklistTokenSchema = new mongoose.Schema({
     }
 });
 
+// Function to insert a token
+blacklistTokenSchema.statics.insertToken = async function (token) {
+    try {
+        // Check if the token already exists
+        const existingToken = await this.findOne({ token });
+        if (existingToken) {
+            console.log('Token already exists, skipping insertion.');
+            return; // or handle as needed
+        }
+
+        // Insert the new token
+        await this.create({ token });
+        console.log('Token inserted successfully.');
+    } catch (error) {
+        console.error('Error inserting token:', error);
+        // Handle the error as needed
+    }
+};
+
 module.exports = mongoose.model('BlacklistToken', blacklistTokenSchema);
 

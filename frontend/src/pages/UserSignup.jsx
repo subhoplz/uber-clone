@@ -1,8 +1,7 @@
 import { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { UserDataContext } from '/context/UserContext'
-
+import { UserDataContext } from '../context/UserContext'
 
 const UserSignup = () => {
     const [email, setEmail] = useState('')
@@ -13,45 +12,39 @@ const UserSignup = () => {
 
     const navigate = useNavigate()
 
-
-
-    const { setUser } = useContext(UserDataContext)
-
-
-
+    const context = useContext(UserDataContext)
+    const setUser = context?.setUser
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        const newUser = ({
-            username: `${firstName}  ${lastName}`,
-            email: email,
-            password: password
-        })
-
-        setUserData(newUser)
-        setUser(newUser)
 
         try {
+            const newUser = {
+                username: `${firstName} ${lastName}`,
+                email: email,
+                password: password
+            }
+
             const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
 
             if (response.status === 201) {
                 const data = response.data
-                setUser(data.user)
+                if (setUser) {
+                    setUser(data.user)
+                }
                 localStorage.setItem('token', data.token)
                 navigate('/home')
             }
         } catch (error) {
-            console.error("Registration failed:", error.response ? error.response.data : error.message);
-            // Optionally, you can display an error message to the user here
+            console.error("Registration failed:", error.response ? error.response.data : error.message)
         }
-
-        console.log(userData);
 
         setEmail('')
         setFirstName('')
         setLastName('')
         setPassword('')
     }
+
     return (
         <div>
             <div className='p-7 h-screen flex flex-col justify-between'>

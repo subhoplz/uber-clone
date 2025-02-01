@@ -106,10 +106,21 @@ module.exports.getUserProfile = async (req, res) => {
 
 module.exports.logoutUser = async (req, res) => {
     try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(400).json({ message: 'Authorization header is required' });
+        }
+
+        const token = authHeader.split(' ')[1];
+        if (!token) {
+            return res.status(400).json({ message: 'Token is required' });
+        }
+
+        await blacklistTokenModel.create({ token });
         res.cookie('token', '', { maxAge: 0 });
-        await blacklistTokenModel.create({ token: req.cookies.token });
         res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Logout error:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };

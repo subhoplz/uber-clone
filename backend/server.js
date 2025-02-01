@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const app = require('./app');  // Import the app configuration
 const connectDB = require('./db/db');
